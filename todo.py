@@ -16,8 +16,8 @@ def save_tasks(tasks):
     DATA_FILE.write_text(json.dumps(tasks, indent=2))
 
 
-def add_task(tasks, title):
-    tasks.append({"title": title, "done": False})
+def add_task(tasks, title, priority="normal"):
+    tasks.append({"title": title, "done": False, "priority": priority})
     return tasks
 
 
@@ -28,7 +28,8 @@ def complete_task(tasks, index):
 
 def format_task(index, task):
     status = "x" if task["done"] else " "
-    return f"{index}. [{status}] {task['title']}"
+    flag = " (!)" if task.get("priority") == "high" else ""
+    return f"{index}. [{status}] {task['title']}{flag}"
 
 
 def main(argv):
@@ -37,13 +38,18 @@ def main(argv):
         for i, task in enumerate(tasks):
             print(format_task(i, task))
     elif argv[1] == "add":
-        add_task(tasks, " ".join(argv[2:]))
+        args = argv[2:]
+        priority = "normal"
+        if "--high" in args:
+            args.remove("--high")
+            priority = "high"
+        add_task(tasks, " ".join(args), priority)
         save_tasks(tasks)
     elif argv[1] == "done":
         complete_task(tasks, int(argv[2]))
         save_tasks(tasks)
     else:
-        print("Usage: python3 todo.py [list | add <title> | done <number>]")
+        print("Usage: python3 todo.py [list | add [--high] <title> | done <number>]")
 
 
 if __name__ == "__main__":
