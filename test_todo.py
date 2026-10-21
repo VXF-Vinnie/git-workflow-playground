@@ -22,6 +22,9 @@ class TodoTests(unittest.TestCase):
         task = {"title": "Pay rent", "done": False, "priority": "high"}
         self.assertEqual(format_task(1, task), "1. [ ] Pay rent (!)")
 
+    def test_format_due_date(self):
+        task = {"title": "Essay", "done": False, "due": "Oct 25"}
+        self.assertEqual(format_task(2, task), "2. [ ] Essay (due Oct 25)")
 
 if __name__ == "__main__":
     unittest.main()
